@@ -1,0 +1,30 @@
+.md-select-button {
+  display: flex;
+  width: auto;
+  height: auto;
+  border-radius: 66px;
+  gap: 1px;
+  overflow: hidden;
+
+  @apply tw-bg-sky/light tw-border tw-border-sky/light;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 40px;
+    background: #FFF;
+    transition: .25s ease-in-out;
+    outline: none;
+    box-shadow: none;
+    font-size: 14px;
+    font-weight: 500;
+
+    @apply tw-text-ink/base;
+
+    &[aria-checked="true"] {
+      @apply tw-bg-primary/base tw-text-white;
+    }
+  }
+}

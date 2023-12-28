@@ -1,0 +1,26 @@
+.md-calendar {
+  &-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 500;
+
+    @apply tw-border tw-border-sky/base tw-bg-white;
+
+    &_completed {
+      @apply tw-bg-primary/light tw-text-white tw-border-primary/light;
+    }
+
+    &_uncompleted {
+      @apply tw-bg-sky/lighter tw-text-ink/base tw-border-sky/lighter;
+    }
+
+    &_selected {
+      @apply tw-bg-primary/base tw-text-white tw-border-primary/base;
+    }
+  }
+}
