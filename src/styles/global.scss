@@ -12,4 +12,21 @@ body {
 
 #app {
   min-height: 100vh;
+  transition: .25s ease-in-out;
+}
+
+[data-mode="dark"] {
+  #app {
+    @apply tw-bg-ink/darkest;
+  }
+
+  svg {
+    [fill]:not([fill="#6B4EFF"]):not(.dark\:tw-fill-ink\/darker) {
+      fill: #F2F4F5;
+    }
+
+    [stroke]:not([stroke="#6B4EFF"]):not(.dark\:tw-fill-ink\/darker) {
+      stroke: #F2F4F5;
+    }
+  }
 }

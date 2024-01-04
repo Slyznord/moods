@@ -1,44 +1,45 @@
 import ReportFactory from '@/classes/Report.factory'
+import i18n from '@/i18n'
 
 export default {
   namespaced: true,
   state: {
     history: [],
-    parameters: [
-      {
+    targetDate: null
+  },
+  getters: {
+    getTargetReport (state) {
+      return state.history.find(item => item.timestamp === state.targetDate)
+    },
+    getParametersForStages () {
+      return [{
         property: 'vivacity',
         steps: 6,
         start: 0,
-        label: 'Vivacity',
+        label: i18n.global.t('message.vivacity'),
         value: null
       },
       {
         property: 'mood',
         steps: 7,
         start: -3,
-        label: 'Mood',
+        label: i18n.global.t('message.mood'),
         value: null
       },
       {
         property: 'irritability',
         steps: 6,
         start: 0,
-        label: 'Irritability',
+        label: i18n.global.t('message.irritability'),
         value: null
       },
       {
         property: 'anxiety',
         steps: 6,
         start: 0,
-        label: 'Anxiety',
+        label: i18n.global.t('message.anxiety'),
         value: null
-      }
-    ],
-    targetDate: null
-  },
-  getters: {
-    getTargetReport (state) {
-      return state.history.find(item => item.timestamp === state.targetDate)
+      }]
     }
   },
   mutations: {
@@ -47,6 +48,7 @@ export default {
        * TODO: Подготовить класс фабрику для создания медикаментов
        */
       const report = state.history.find(item => item.timestamp === timestamp)
+
       report.medications.push({
         name: '',
         dosage: '',

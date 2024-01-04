@@ -13,13 +13,13 @@
     <template #default>
       <div class="tw-flex tw-flex-col tw-w-full tw-items-start tw-gap-6 tw-overflow-y-auto">
         <div class="tw-flex tw-items-center tw-justify-between tw-w-full">
-          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/base">Medication</h2>
+          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter">{{ $t('message.medications') }}</h2>
 
           <div
             class="md-button md-button_primary"
             @click="appendMedication"
           >
-            + Add
+            + {{ $t('message.add') }}
           </div>
         </div>
 
@@ -30,25 +30,25 @@
             class="tw-flex tw-flex-col tw-items-end tw-w-full tw-gap-3"
           >
             <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-3">
-              <input-text
-                label="Medication name"
-                placeholder="medication name"
+              <input-comp
+                :label="$t('message.medication_name')"
+                :placeholder="$t('message.medication_name')"
                 :model-value="item.name"
                 @update:model-value="updateMedicationByProperty(index, $event, 'name')"
               />
 
               <div class="tw-flex tw-items-center tw-w-full tw-gap-4">
                 <div class="tw-flex tw-items-end tw-min-w-[64%] tw-gap-2">
-                  <input-text
-                    label="Time"
-                    placeholder="notification time"
+                  <input-comp
+                    :label="$t('message.medication_notification_time')"
+                    :placeholder="$t('message.medication_notification_time')"
                     disabled
                     :model-value="item.notificationTime"
                     @update:model-value="updateMedicationByProperty(index, $event, 'notificationTime')"
                   />
 
                   <div
-                    class="md-button md-button_primary tw-w-10"
+                    class="md-button md-button_primary tw-w-10 tw-pointer-events-none tw-opacity-35"
                     @click="openTimeModal(index)"
                   >
                     <icon-base
@@ -61,19 +61,24 @@
                   </div>
                 </div>
 
-                <div class="tw-flex tw-items-end tw-w-auto tw-gap-2">
-                  <input-text
-                    label="Dosage"
-                    placeholder="dosage"
+                <div class="tw-flex tw-items-end tw-w-auto tw-gap-1">
+                  <input-comp
+                    :label="$t('message.medication_dosage')"
+                    :placeholder="$t('message.medication_dosage')"
                     :model-value="item.dosage"
                     @update:model-value="updateMedicationByProperty(index, $event, 'dosage')"
                   />
 
-                  <dropdown
+                  <select-comp
                     :model-value="item.unit"
-                    :options="store.state.medications.units"
+                    :options="units"
+                    option-label="label"
                     @update:model-value="updateMedicationByProperty(index, $event, 'unit')"
-                  />
+                  >
+                    <template #value="{ value }">
+                      {{ value.label }}
+                    </template>
+                  </select-comp>
                 </div>
               </div>
             </div>
@@ -89,9 +94,17 @@
                 :view-box-size="[16, 16]"
                 fill="#6C7072"
               />
-              Remove
+
+              {{ $t('message.remove') }}
             </div>
           </div>
+
+          <span
+            v-if="!medications.length"
+            class="tw-text-sm tw-font-medium tw-text-sky/base dark:tw-text-sky/base tw-mx-auto"
+          >
+            {{ $t('message.medications_empty') }}
+          </span>
         </div>
       </div>
 
@@ -100,10 +113,10 @@
   </vue-final-modal>
 </template>
 
-<script setup>
-import Dropdown from '@/components/dropdown.vue'
+<script>
 import IconBase from '@/components/icon-base.vue'
-import InputText from '@/components/input-text.vue'
+import InputComp from '@/components/input-comp.vue'
+import SelectComp from '@/components/select-comp.vue'
 import TimeModal from '@/modals/time-modal.vue'
 import icons from '@/utils/icons'
 
@@ -111,32 +124,55 @@ import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { useModal, VueFinalModal } from 'vue-final-modal'
 
-const store = useStore()
-const medications = computed(() => store.state.medications.medications)
+export default {
+  name: 'medication-settings-modal',
+  components: {
+    IconBase,
+    InputComp,
+    SelectComp,
+    VueFinalModal
+  },
+  setup () {
+    const store = useStore()
 
-function openTimeModal (index) {
-  const { open } = useModal({
-    component: TimeModal,
-    attrs: {
-      medicationIndex: index
+    const medications = computed(() => store.state.medications.medications)
+    const units = computed(() => store.getters['medications/getUnits'])
+
+    function openTimeModal (index) {
+      const { open } = useModal({
+        component: TimeModal,
+        attrs: {
+          medicationIndex: index
+        }
+      })
+
+      open()
     }
-  })
 
-  open()
-}
+    function appendMedication () {
+      store.commit('dailyReport/appendMedication', store.state.dailyReport.targetDate)
+      store.commit('medications/appendMedication')
+    }
 
-function appendMedication () {
-  store.commit('dailyReport/appendMedication', store.state.dailyReport.targetDate)
-  store.commit('medications/appendMedication')
-}
+    function onRemoveMedication (index) {
+      store.commit('dailyReport/removeMedication', { index, timestamp: store.state.dailyReport.targetDate })
+      store.commit('medications/removeMedication', index)
+    }
 
-function onRemoveMedication (index) {
-  store.commit('dailyReport/removeMedication', { index, timestamp: store.state.dailyReport.targetDate })
-  store.commit('medications/removeMedication', index)
-}
+    function updateMedicationByProperty (index, value, property) {
+      store.commit('dailyReport/updateMedications', { index, value, property, timestamp: store.state.dailyReport.targetDate })
+      store.commit('medications/updateMedicationByProperty', { index, value, property })
+    }
 
-function updateMedicationByProperty (index, value, property) {
-  store.commit('dailyReport/updateMedications', { index, value, property, timestamp: store.state.dailyReport.targetDate })
-  store.commit('medications/updateMedicationByProperty', { index, value, property })
+    return {
+      appendMedication,
+      icons,
+      medications,
+      onRemoveMedication,
+      openTimeModal,
+      units,
+      updateMedicationByProperty
+    }
+  }
 }
 </script>

@@ -29,46 +29,55 @@
   </svg>
 </template>
 
-<script setup>
-import { computed } from 'vue'
+<script>
+import { computed, toRefs } from 'vue'
 
-const props = defineProps({
-  fill: {
-    type: String,
-    default: 'none'
+export default {
+  name: 'icon-base',
+  props: {
+    fill: {
+      type: String,
+      default: 'none'
+    },
+    height: {
+      type: [Number, String],
+      default: 24
+    },
+    icon: {
+      type: String,
+      required: true
+    },
+    strokeColor: {
+      type: String,
+      default: ''
+    },
+    strokeLinecap: {
+      type: [Number, String],
+      default: ''
+    },
+    strokeLinejoin: {
+      type: String,
+      default: ''
+    },
+    strokeWidth: {
+      type: [Number, String],
+      default: 0
+    },
+    viewBoxSize: {
+      type: Array,
+      default: () => [24, 24]
+    },
+    width: {
+      type: [Number, String],
+      default: 24
+    }
   },
-  height: {
-    type: [Number, String],
-    default: 24
-  },
-  icon: {
-    type: String,
-    required: true
-  },
-  strokeColor: {
-    type: String,
-    default: ''
-  },
-  strokeLinecap: {
-    type: [Number, String],
-    default: ''
-  },
-  strokeLinejoin: {
-    type: String,
-    default: ''
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: 0
-  },
-  viewBoxSize: {
-    type: Array,
-    default: () => [24, 24]
-  },
-  width: {
-    type: [Number, String],
-    default: 24
+  setup (props) {
+    const { icon } = toRefs(props)
+
+    return {
+      isIconArray: computed(() => Array.isArray(icon.value))
+    }
   }
-})
-const isIconArray = computed(() => Array.isArray(props.icon))
+}
 </script>

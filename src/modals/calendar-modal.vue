@@ -35,7 +35,7 @@
   </vue-final-modal>
 </template>
 
-<script setup>
+<script>
 import Calendar from 'primevue/calendar'
 
 import ReportFactory from '@/classes/Report.factory'
@@ -44,80 +44,96 @@ import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { VueFinalModal } from 'vue-final-modal'
 
-const store = useStore()
-
-const emits = defineEmits(['update:model-value', 'hide'])
-
-const ptOptions = {
-  root: {
-    class: ['tw-w-full']
+export default {
+  name: 'calendar-modal',
+  components: {
+    Calendar,
+    VueFinalModal
   },
-  header: {
-    class: ['tw-mb-5']
-  },
-  title: {
-    class: ['tw-flex tw-items-center tw-gap-2']
-  },
-  monthtitle: {
-    class: ['tw-text-2xl tw-font-semibold tw-text-ink/base']
-  },
-  yeartitle: {
-    class: ['tw-text-2xl tw-font-semibold tw-text-ink/base']
-  },
-  weekday: {
-    class: ['tw-text-sm tw-font-bold tw-text-ink/base']
-  },
-  day: {
-    class: ['tw-py-1']
-  }
-}
-const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
-const formattedTargetDate = computed(() => new Date(targetDateTimestamp.value))
+  setup (props, { emit }) {
+    const store = useStore()
 
-const getDateTimestamp = ({ day, month, year }) => dayjs(`${year},${month + 1},${day}`).valueOf()
+    const ptOptions = {
+      root: {
+        class: ['tw-w-full']
+      },
+      header: {
+        class: ['tw-mb-5']
+      },
+      title: {
+        class: ['tw-flex tw-items-center tw-gap-2']
+      },
+      monthtitle: {
+        class: ['tw-text-2xl tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter']
+      },
+      yeartitle: {
+        class: ['tw-text-2xl tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter']
+      },
+      weekday: {
+        class: ['tw-text-sm tw-font-bold tw-text-ink/base dark:tw-text-sky/lighter']
+      },
+      day: {
+        class: ['tw-py-1']
+      }
+    }
+    const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
+    const formattedTargetDate = computed(() => new Date(targetDateTimestamp.value))
 
-function isCompletedReport (date) {
-  const report = store.state.dailyReport.history.find(item => item.timestamp === getDateTimestamp(date))
+    const getDateTimestamp = ({ day, month, year }) => dayjs(`${year},${month + 1},${day}`).valueOf()
 
-  if (!report) {
-    return false
-  }
+    function isCompletedReport (date) {
+      const report = store.state.dailyReport.history.find(item => item.timestamp === getDateTimestamp(date))
 
-  return Object.values(report).every(value => {
-    if (Array.isArray(value)) {
-      return value.every(item => Object.hasOwn(item, 'value'))
+      if (!report) {
+        return false
+      }
+
+      return Object.values(report).every(value => {
+        if (Array.isArray(value)) {
+          return value.every(item => Object.hasOwn(item, 'value'))
+        }
+
+        return value !== undefined && value !== null
+      })
     }
 
-    return value !== undefined && value !== null
-  })
-}
+    function isFutureDay (date) {
+      return getDateTimestamp(date) > Date.now()
+    }
 
-function isFutureDay (date) {
-  return getDateTimestamp(date) > Date.now()
-}
+    function isSelectedDate (date) {
+      return getDateTimestamp(date) === targetDateTimestamp.value
+    }
 
-function isSelectedDate (date) {
-  return getDateTimestamp(date) === targetDateTimestamp.value
-}
+    function changeDate (value) {
+      const timestamp = dayjs(value).valueOf()
 
-function changeDate (value) {
-  const timestamp = dayjs(value).valueOf()
+      if (timestamp > dayjs().valueOf()) return
 
-  if (timestamp > dayjs().valueOf()) return
+      store.commit('dailyReport/setTargetDate', timestamp)
 
-  store.commit('dailyReport/setTargetDate', timestamp)
+      const foundedReport = store.state.dailyReport.history.find(item => item.timestamp === timestamp)
 
-  const foundedReport = store.state.dailyReport.history.find(item => item.timestamp === timestamp)
+      if (!foundedReport) {
+        const reportFactory = new ReportFactory()
+        const dailyReport = reportFactory.createDailyReport(timestamp)
 
-  if (!foundedReport) {
-    const reportFactory = new ReportFactory()
-    const dailyReport = reportFactory.createDailyReport(timestamp)
+        dailyReport.medications = JSON.parse(JSON.stringify(store.state.medications.medications))
 
-    dailyReport.medications = JSON.parse(JSON.stringify(store.state.medications.medications))
+        store.commit('dailyReport/appendReport', dailyReport.getReport())
+      }
 
-    store.commit('dailyReport/appendReport', dailyReport.getReport())
+      emit('update:model-value', false)
+    }
+
+    return {
+      changeDate,
+      formattedTargetDate,
+      isCompletedReport,
+      isFutureDay,
+      isSelectedDate,
+      ptOptions
+    }
   }
-
-  emits('update:model-value', false)
 }
 </script>

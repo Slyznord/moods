@@ -38,7 +38,7 @@
   }
 
   &_outline {
-    @apply tw-bg-sky/lighter;
+    @apply tw-bg-sky/lighter dark:tw-bg-ink/base dark:tw-text-sky/lighter;
 
     &:active {
       @apply tw-bg-primary/base tw-text-white;

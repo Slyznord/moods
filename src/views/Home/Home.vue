@@ -3,23 +3,23 @@
     <header-comp />
     <sleep-hours />
 
-    <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-4">
+    <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-5">
       <stages
         v-for="item in parameters"
         :key="item.label"
         :label="item.label"
         :start="item.start"
         :steps="item.steps"
-        :model-value="store.getters['dailyReport/getTargetReport'][item.property]"
+        :model-value="getTargetReport[item.property]"
         :property="item.property"
-        @update:model-value="store.commit('dailyReport/setDailyReportDataByProperty', { value: $event.value, property: $event.property, timestamp: targetTimestamp })"
+        @update:model-value="setDailyReportDataByProperty({ value: $event.value, property: $event.property, timestamp: targetTimestamp })"
       />
 
-      <select-button
-        :model-value="store.getters['dailyReport/getTargetReport'].therapy"
-        :options="therapyOptions"
-        label="Therapy today"
-        @update:model-value="store.commit('dailyReport/setDailyReportDataByProperty', { value: $event, timestamp: targetTimestamp, property: 'therapy' })"
+      <option-button
+        :model-value="getTargetReport.therapy"
+        :options="selectButtonOptions"
+        :label="$t('message.therapy_today')"
+        @update:model-value="setDailyReportDataByProperty({ value: $event, timestamp: targetTimestamp, property: 'therapy' })"
       />
     </div>
 
@@ -33,61 +33,98 @@
           @click="openMedicationSettings"
         />
 
-        <span class="tw-text-base tw-font-semibold tw-text-ink/dark">Medications</span>
+        <span class="tw-text-base tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">{{ $t('message.medications') }}</span>
       </div>
 
-      <div class="tw-flex tw-flex-wrap tw-gap-4">
-        <select-button
+      <div
+        v-if="medications.length"
+        class="tw-flex tw-flex-wrap tw-gap-4"
+      >
+        <option-button
           v-for="(item, index) in medications"
           :key="index"
-          :options="['yes', 'no']"
+          :options="selectButtonOptions"
           :model-value="item.value || ''"
-          :label="`${item.name}: ${item.dosage}${item.unit}`"
-          @update:model-value="store.commit('dailyReport/updateMedications', { index, value: $event, timestamp: targetTimestamp, property: 'value' })"
+          :label="`${item.name}: ${item.dosage}${item.unit.label}`"
+          @update:model-value="updateMedications({ index, value: $event, timestamp: targetTimestamp, property: 'value' })"
         />
       </div>
 
-      <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-4">
-        <h3 class="tw-text-base tw-font-semibold tw-text-ink/dark">Notes</h3>
+      <span
+        v-else
+        class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/base tw-mx-auto"
+      >
+        {{ $t('message.medication_empty') }}
+      </span>
+    </div>
 
-        <Textarea
-          :model-value="store.getters['dailyReport/getTargetReport'].notes"
-          auto-resize
-          placeholder="Your notes"
-          class="tw-w-full tw-border tw-border-sky/base tw-rounded-lg tw-min-h-[96px] tw-outline-none tw-py-3 tw-px-3 tw-text-base tw-font-regular tw-text-ink/base tw-resize-none tw-placeholder:text-sky/dark focus:tw-border-primary/base"
-          @update:model-value="store.commit('dailyReport/setDailyReportDataByProperty', { value: $event, timestamp: targetTimestamp, property: 'notes' })"
-        />
-      </div>
+    <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-4">
+      <h3 class="tw-text-base tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">{{ $t('message.notes') }}</h3>
+
+      <Textarea
+        :model-value="getTargetReport.notes"
+        :placeholder="$t('message.notes_placeholder')"
+        auto-resize
+        class="tw-w-full tw-border tw-border-sky/base dark:tw-border-ink/dark dark:tw-bg-ink/dark tw-rounded-lg tw-min-h-[96px] tw-outline-none tw-py-3 tw-px-3 tw-text-base tw-font-regular tw-text-ink/base dark:tw-text-sky/lighter tw-resize-none tw-placeholder:text-sky/dark focus:tw-border-primary/base"
+        @update:model-value="setDailyReportDataByProperty({ value: $event, timestamp: targetTimestamp, property: 'notes' })"
+      />
     </div>
   </div>
 </template>
 
-<script setup>
-import HeaderComp from './components/header-comp.vue'
+<script>
 import IconBase from '@/components/icon-base.vue'
+import HeaderComp from './components/header-comp.vue'
 import MedicationSettingsModal from '@/modals/medication-settings-modal.vue'
-import SelectButton from '@/components/select-button.vue'
+import OptionButton from '@/components/option-button.vue'
 import SleepHours from './components/sleep-hours.vue'
 import Stages from './components/stages.vue'
 import Textarea from 'primevue/textarea'
 import icons from '@/utils/icons'
 
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useModal } from 'vue-final-modal'
+import { useI18n } from 'vue-i18n'
 
-const store = useStore()
-const { open: openMedicationSettings } = useModal({
-  component: MedicationSettingsModal
-})
+export default {
+  name: 'home',
+  components: {
+    IconBase,
+    HeaderComp,
+    OptionButton,
+    SleepHours,
+    Stages,
+    Textarea
+  },
+  setup () {
+    const { t } = useI18n()
+    const store = useStore()
+    const { open: openMedicationSettings } = useModal({
+      component: MedicationSettingsModal
+    })
 
-const medications = computed(() => store.getters['dailyReport/getTargetReport']?.medications || [])
+    const medications = computed(() => store.getters['dailyReport/getTargetReport']?.medications || [])
 
-// Данные для отрисовки шкал по параметрам
-const parameters = computed(() => store.state.dailyReport.parameters)
+    // Данные для отрисовки шкал по параметрам
+    const parameters = computed(() => store.getters['dailyReport/getParametersForStages'])
 
-// Данные для отрисовки select-button терапии
-const therapyOptions = ref(['yes', 'no'])
+    // Данные для отрисовки select-button терапии
+    const selectButtonOptions = computed(() => [t('message.yes'), t('message.no')])
 
-const targetTimestamp = computed(() => store.state.dailyReport.targetDate)
+    const targetTimestamp = computed(() => store.state.dailyReport.targetDate)
+
+    return {
+      getTargetReport: computed(() => store.getters['dailyReport/getTargetReport']),
+      icons,
+      medications,
+      openMedicationSettings,
+      parameters,
+      selectButtonOptions,
+      setDailyReportDataByProperty: (payload) => store.commit('dailyReport/setDailyReportDataByProperty', payload),
+      targetTimestamp,
+      updateMedications: (payload) => store.commit('dailyReport/updateMedications', payload)
+    }
+  }
+}
 </script>

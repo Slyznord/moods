@@ -6,7 +6,7 @@
   gap: 1px;
   overflow: hidden;
 
-  @apply tw-bg-sky/light tw-border tw-border-sky/light;
+  @apply tw-bg-sky/light dark:tw-bg-ink/darker tw-border tw-border-sky/light dark:tw-border-ink/darker;
 
   &__item {
     display: flex;
@@ -21,7 +21,7 @@
     font-size: 14px;
     font-weight: 500;
 
-    @apply tw-text-ink/base;
+    @apply tw-text-ink/base dark:tw-bg-ink/dark dark:tw-text-sky/lighter;
 
     &[aria-checked="true"] {
       @apply tw-bg-primary/base tw-text-white;

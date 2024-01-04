@@ -1,24 +1,23 @@
+import i18n from '@/i18n'
+
 export default {
   namespaced: true,
   state: {
-    medications: [
-      {
-        name: 'Cvetiapine',
-        dosage: '25',
-        unit: 'mg',
-        notificationTime: '12:20'
-      },
-      {
-        name: 'Venlafaxin',
-        dosage: '75',
-        unit: 'mg',
-        notificationTime: '13:00'
-      }
-    ],
-    units: [
-      'mg',
-      'g'
-    ]
+    medications: []
+  },
+  getters: {
+    getUnits () {
+      return [
+        {
+          prop: 'mg',
+          label: i18n.global.t('message.mg')
+        },
+        {
+          prop: 'g',
+          label: i18n.global.t('message.g')
+        }
+      ]
+    }
   },
   mutations: {
     appendMedication (state) {
