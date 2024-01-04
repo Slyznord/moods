@@ -1,0 +1,39 @@
+# Workflow name, if not set, the configuration file name will be taken by default
+name: Build and Deploy
+# Specify the conditions that trigger workflow
+# Specify the trigger event, you can limit the branch or label
+# Currently, workflow tasks are executed only when the push event is triggered on the master branch
+on: 
+  push:
+    branches:
+      - master
+# One or more tasks performed by the workflow
+jobs:
+  # mission name
+  build-and-deploy:
+    # The type of container the task runs (virtual machine environment)
+    runs-on: ubuntu-latest
+    # Task execution steps
+    steps:
+      # Step name
+      - name: Checkout ️
+        # Actions used actions, you can use public warehouses, local warehouses, other people's warehouse actions
+        # Pull code
+        uses: actions/checkout@master
+
+      - name: Build and Deploy
+        # Build and publish Github pages
+        uses: JamesIves/github-pages-deploy-action@releases/v2
+        # Environment variables required for this step
+        env:
+          ACCESS_TOKEN: ${{ secrets.TOKEN }}
+          # The basic branch to be checked out before deployment, the default is master
+          BASE_BRANCH: master # The branch the action should deploy from.
+          # Specify the branch for deployment, the default is the gh-pages branch
+          BRANCH: gh-pages # The branch the action should deploy to.
+          # The folder to be deployed in the repository.
+          # This step will push the files under the folder specified by FOLDER in the project to the BRANCH branch as the content deployed by Github Pages.
+          # Vue CLI is packaged in the dist directory by default
+          FOLDER: dist # The folder the action should deploy.
+          # Before pushing the code to the BRANCH branch, you can specify the build script
+          BUILD_SCRIPT: npm install && npm run build # The build script the action should run prior to deploying.
