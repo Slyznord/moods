@@ -1,5 +1,9 @@
 <template>
-  <div class="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-8">
+  <div
+    class="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-8"
+    v-touch:swipe.left="onSwipeHandler"
+    v-touch:swipe.right="onSwipeHandler"
+  >
     <header-comp />
     <sleep-hours />
 
@@ -86,6 +90,7 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useModal } from 'vue-final-modal'
 import { useI18n } from 'vue-i18n'
+import ReportFactory from '@/classes/Report.factory'
 
 export default {
   name: 'home',
@@ -114,10 +119,29 @@ export default {
 
     const targetTimestamp = computed(() => store.state.dailyReport.targetDate)
 
+    function onSwipeHandler (direction) {
+      const day = 86400000
+      const targetDay = direction === 'left' ? targetTimestamp.value + day : targetTimestamp.value - day
+
+      store.commit('dailyReport/setTargetDate', targetDay)
+
+      const foundedReport = store.state.dailyReport.history.find(item => item.timestamp === targetDay)
+
+      if (!foundedReport) {
+        const reportFactory = new ReportFactory()
+        const dailyReport = reportFactory.createDailyReport(targetDay)
+
+        dailyReport.medications = JSON.parse(JSON.stringify(store.state.medications.medications))
+
+        store.commit('dailyReport/appendReport', dailyReport.getReport())
+      }
+    }
+
     return {
       getTargetReport: computed(() => store.getters['dailyReport/getTargetReport']),
       icons,
       medications,
+      onSwipeHandler,
       openMedicationSettings,
       parameters,
       selectButtonOptions,

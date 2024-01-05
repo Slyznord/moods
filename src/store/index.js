@@ -12,9 +12,14 @@ import EngIcon from '@/assets/img/eng-icon.png'
 import VuexPersistence from 'vuex-persist'
 import i18n from '@/i18n'
 
+let plugins = []
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
 })
+
+if (process.env.NODE_ENV === 'production') {
+  plugins = [...plugins, vuexLocal.plugin]
+}
 
 export default createStore({
   state: {
@@ -49,5 +54,5 @@ export default createStore({
     dailyReport: DailyReportModule,
     medications: MedicationsModule
   },
-  plugins: [vuexLocal.plugin]
+  plugins
 })
