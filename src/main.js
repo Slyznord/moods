@@ -10,6 +10,7 @@ import '@/styles/main.scss'
 
 import i18n from '@/i18n'
 import locales from '@/locales/index'
+import './registerServiceWorker'
 
 const app = createApp(App)
 const vfm = createVfm()
