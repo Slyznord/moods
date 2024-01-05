@@ -100,7 +100,10 @@ export default {
     const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
     const formattedTargetDate = computed(() => new Date(targetDateTimestamp.value))
 
-    const getDateTimestamp = ({ day, month, year }) => dayjs(`${year},${month + 1},${day}`).valueOf()
+    // Замена слеша на точку, запятую, дефис и т.д. приведет к тому,
+    // что дата в ios будет возвращаться неправильная, а именно Null.
+    // Особенность движка Safari :/
+    const getDateTimestamp = ({ day, month, year }) => dayjs(`${year}/${month + 1}/${day}`).valueOf()
 
     function isCompletedReport (date) {
       const report = store.state.dailyReport.history.find(item => item.timestamp === getDateTimestamp(date))
