@@ -74,6 +74,27 @@ export default {
       },
       day: {
         class: ['tw-py-1']
+      },
+      previousbutton: {
+        class: ['tw-w-10 tw-h-10']
+      },
+      nextbutton: {
+        class: ['tw-w-10 tw-h-10']
+      },
+      monthpicker: {
+        class: ['tw-grid tw-grid-cols-3 tw-gap-4']
+      },
+      month: {
+        class: ['tw-flex tw-justify-center tw-items-center tw-w-full tw-text-base dark:tw-text-sky/light tw-text-ink/base tw-font-medium']
+      },
+      decadetitle: {
+        class: ['tw-text-2xl tw-font-semibold tw-text-ink/dark dark:tw-text-sky/light']
+      },
+      yearpicker: {
+        class: ['tw-grid tw-grid-cols-2 tw-gap-4']
+      },
+      year: {
+        class: ['tw-flex tw-justify-center tw-items-center tw-w-full tw-text-base dark:tw-text-sky/light tw-text-ink/base tw-font-medium']
       }
     }
     const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
