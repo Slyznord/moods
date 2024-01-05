@@ -26,7 +26,7 @@ module.exports = {
         base: '0px 0px 25px 0px rgba(69, 69, 69, 0.10)'
       },
       height: {
-        contentHeight: 'calc(100vh - 180px)'
+        contentHeight: 'calc(100vh - 120px)'
       }
     }
   },
