@@ -15,6 +15,8 @@ import './registerServiceWorker'
 const app = createApp(App)
 const vfm = createVfm()
 
+app.config.productionTip = false
+
 app.use(store)
 app.use(i18n)
 app.use(router)
