@@ -3,8 +3,6 @@
     <header-comp />
     <sleep-hours />
 
-    <pre>{{ data }}</pre>
-
     <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-5">
       <stages
         v-for="item in parameters"
