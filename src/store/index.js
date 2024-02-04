@@ -14,10 +14,11 @@ import i18n from '@/i18n'
 
 let plugins = []
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage
+  storage: window.localStorage,
+  modules: [DailyReportModule, MedicationsModule]
 })
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'production') {
   plugins = [...plugins, vuexLocal.plugin]
 }
 
