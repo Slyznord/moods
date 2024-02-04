@@ -7,7 +7,6 @@ import PrimeVue from 'primevue/config'
 import { createVfm } from 'vue-final-modal'
 import 'vue-final-modal/style.css'
 import '@/styles/main.scss'
-import Vue3TouchEvents from 'vue3-touch-events'
 
 import i18n from '@/i18n'
 import './registerServiceWorker'
@@ -17,7 +16,6 @@ const vfm = createVfm()
 
 app.config.productionTip = false
 
-app.use(Vue3TouchEvents)
 app.use(store)
 app.use(i18n)
 app.use(router)

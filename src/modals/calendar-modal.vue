@@ -21,15 +21,16 @@
         <template #date="{ date }">
           <div
             :class="[
-              'md-calendar-day',
-              isCompletedReport(date) ? 'md-calendar-day_completed' : (isFutureDay(date) ? '' : 'md-calendar-day_uncompleted'),
-              { 'md-calendar-day_selected' : isSelectedDate(date) }
-            ]"
+                'md-calendar-day',
+                isCompletedReport(date) ? 'md-calendar-day_completed' : (isFutureDay(date) ? '' : 'md-calendar-day_uncompleted'),
+                { 'md-calendar-day_selected' : isSelectedDate(date) }
+              ]"
           >
             {{ date.day }}
           </div>
         </template>
       </Calendar>
+
       <div class="md-modal-line" />
     </template>
   </vue-final-modal>
@@ -43,6 +44,7 @@ import dayjs from 'dayjs'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { VueFinalModal } from 'vue-final-modal'
+import { cloneDeep } from 'lodash'
 
 export default {
   name: 'calendar-modal',
@@ -97,6 +99,7 @@ export default {
         class: ['tw-flex tw-justify-center tw-items-center tw-w-full tw-text-base dark:tw-text-sky/light tw-text-ink/base tw-font-medium']
       }
     }
+
     const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
     const formattedTargetDate = computed(() => new Date(targetDateTimestamp.value))
 
@@ -106,11 +109,13 @@ export default {
     const getDateTimestamp = ({ day, month, year }) => dayjs(`${year}/${month + 1}/${day}`).valueOf()
 
     function isCompletedReport (date) {
-      const report = store.state.dailyReport.history.find(item => item.timestamp === getDateTimestamp(date))
+      const report = cloneDeep(store.state.dailyReport.history.find(item => item.timestamp === getDateTimestamp(date)))
 
       if (!report) {
         return false
       }
+
+      delete report.notes
 
       return Object.values(report).every(value => {
         if (Array.isArray(value)) {

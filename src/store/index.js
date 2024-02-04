@@ -17,7 +17,7 @@ const vuexLocal = new VuexPersistence({
   storage: window.localStorage
 })
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'production') {
   plugins = [...plugins, vuexLocal.plugin]
 }
 
