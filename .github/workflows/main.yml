@@ -1,0 +1,30 @@
+name: Build and Deploy
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ️
+        uses: actions/checkout@master
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+
+      - name: Installing Dependencies
+        run: npm install
+
+      - name: Building App
+        run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          publish_dir: ./dist
+          
