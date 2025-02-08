@@ -1,1 +1,1 @@
-{"name":"moods","short_name":"moods","start_url":"/","display":"standalone","background_color":"#ffffff","lang":"en","scope":"/","description":"Check your mood every day","theme_color":"#FFF","icons":[]}
+{"name":"moods","short_name":"moods","start_url":"/moods/","display":"standalone","background_color":"#ffffff","lang":"en","scope":"/moods/","description":"Check your mood every day","theme_color":"#FFF","icons":[]}
