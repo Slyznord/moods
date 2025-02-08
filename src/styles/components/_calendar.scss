@@ -1,0 +1,26 @@
+.md-calendar {
+  &-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 500;
+
+    @apply tw-border tw-border-sky/base tw-bg-white dark:tw-bg-ink/darker dark:tw-border-ink/base dark:tw-text-sky/lighter;
+
+    &_completed {
+      @apply tw-bg-primary/light tw-text-white tw-border-primary/light dark:tw-bg-primary/light dark:tw-border-primary/light;
+    }
+
+    &_uncompleted {
+      @apply tw-bg-sky/lighter tw-text-ink/base tw-border-sky/lighter dark:tw-bg-ink/base dark:tw-border-ink/base dark:tw-text-sky/lighter;
+    }
+
+    &_selected {
+      @apply tw-bg-primary/base tw-text-white tw-border-primary/base dark:tw-border-primary/base;
+    }
+  }
+}

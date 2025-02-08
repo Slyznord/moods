@@ -1,0 +1,53 @@
+.md-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: 40px;
+  padding: 10px 12px;
+  gap: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .25s ease-in-out;
+  font-size: 16px;
+  font-weight: 400;
+
+  &_primary {
+    @apply tw-text-white tw-bg-primary/base;
+
+    svg path {
+      &[stroke] {
+        stroke: #FFF;
+      }
+
+      &[fill] {
+        fill: #FFF;
+      }
+    }
+
+    &:active:not(.md-button_disabled),
+    &:focus:not(.md-button_disabled) {
+      @apply tw-bg-primary/base tw-text-white;
+      box-shadow: 0 0 0 4px #E7E7FF;
+    }
+
+    .md-button_disabled {
+      background: rgba(107, 78, 255, 0.25);
+      pointer-events: none;
+    }
+  }
+
+  &_outline {
+    @apply tw-bg-sky/lighter dark:tw-bg-ink/base dark:tw-text-sky/lighter;
+
+    &:active {
+      @apply tw-bg-primary/base tw-text-white;
+      box-shadow: 0 0 0 4px #E7E7FF;
+    }
+  }
+
+  &_circle {
+    width: 40px;
+    border-radius: 50%;
+  }
+}

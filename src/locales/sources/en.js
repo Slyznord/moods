@@ -1,0 +1,43 @@
+export const en = {
+  message: {
+    menu_daily: 'Daily',
+    menu_another: 'Another',
+    menu_analytics: 'Analytics',
+    menu_settings: 'Settings',
+    daily_headline: 'Daily report',
+    sleep_hours: 'Sleep hours',
+    vivacity: 'Vivacity',
+    mood: 'Mood',
+    irritability: 'Irritability',
+    anxiety: 'Anxiety',
+    therapy_today: 'Therapy today',
+    medications: 'Medications',
+    yes: 'yes',
+    no: 'no',
+    notes: 'Notes',
+    notes_placeholder: 'Your notes',
+    add: 'Add',
+    medication_name: 'medication name',
+    medication_notification_time: 'time',
+    medication_dosage: 'dosage',
+    remove: 'remove',
+    mg: 'mg',
+    g: 'g',
+    medications_empty: 'Add the medications you need to take',
+    theme: 'Theme',
+    theme_dark: 'Dark',
+    choose_language: 'Choose language',
+    language: 'Language',
+    language_ru: 'Russian',
+    language_en: 'English',
+    hour: 'h',
+    medication_empty: 'There are no medications',
+    choose_unit: 'Choose unit'
+  },
+  primeVue: {
+    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  }
+}

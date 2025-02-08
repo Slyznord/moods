@@ -1,0 +1,29 @@
+.md-switch {
+  @apply tw-bg-sky/base tw-w-[65px] tw-h-[32px] tw-rounded-[32px];
+
+  &__slider::before {
+    @apply
+      tw-w-[26px]
+      tw-h-[26px]
+      tw-bg-white
+      tw-rounded-full
+      tw-top-0
+      tw-bottom-0
+      tw-my-auto
+      tw-mx-0
+      tw-transition-all
+      tw-duration-300
+      tw-left-1
+    ;
+  }
+
+  &[data-p-highlight="true"] {
+    .md-switch__slider {
+      @apply tw-bg-primary/base;
+    }
+
+    .md-switch__slider::before {
+      @apply tw-left-[28%];
+    }
+  }
+}

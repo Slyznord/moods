@@ -1,0 +1,11 @@
+@import './components/_button';
+@import './components/_calendar';
+@import './components/_modal';
+@import './components/_select-button';
+@import './components/_switch';
+
+@import './global';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
