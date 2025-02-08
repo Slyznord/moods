@@ -1,29 +1,24 @@
 name: Build and Deploy
+
 on:
   push:
     branches:
       - master
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout ️
-        uses: actions/checkout@master
+      - name: Checkout 🛎️ ️
+        uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
+      - name: Install and Build 🔧
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          node-version: "14.x"
-
-      - name: Installing Dependencies
-        run: npm install
-
-      - name: Building App
-        run: npm run build
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.TOKEN }}
-          publish_dir: ./dist
+          folder: dist
+          ssh-key: ${{ secrets.TOKEN }}
