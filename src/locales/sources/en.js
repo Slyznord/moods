@@ -17,13 +17,9 @@ export const en = {
     notes: 'Notes',
     notes_placeholder: 'Your notes',
     add: 'Add',
-    medication_name: 'medication name',
-    medication_notification_time: 'time',
-    medication_dosage: 'dosage',
     remove: 'remove',
     mg: 'mg',
     g: 'g',
-    medications_empty: 'Add the medications you need to take',
     theme: 'Theme',
     theme_dark: 'Dark',
     choose_language: 'Choose language',
@@ -32,7 +28,15 @@ export const en = {
     language_en: 'English',
     hour: 'h',
     medication_empty: 'There are no medications',
-    choose_unit: 'Choose unit'
+    choose_unit: 'Choose unit',
+
+    MEDICATION_PLACEHOLDER_TIME: '12:00',
+    MEDICATION_LABEL_NAME: 'Medication name',
+    MEDICATION_LABEL_TIME: 'Time',
+    'MEDICATION_PLACEHOLDER_MEDICATION-NAME': 'Venlafaxin',
+    MEDICATION_EMPTY_TEXT: 'Add the medications you need to take',
+    MEDICATION_LABEL_DOSAGE: 'Dosage',
+    MEDICATION_PLACEHOLDER_DOSAGE: 'mg'
   },
   primeVue: {
     dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],

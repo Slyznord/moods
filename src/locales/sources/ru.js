@@ -17,13 +17,9 @@ export const ru = {
     notes: 'Заметки',
     notes_placeholder: 'Ваши заметки',
     add: 'Добавить',
-    medication_name: 'название лекарства',
-    medication_notification_time: 'время приема',
-    medication_dosage: 'дозировка',
     remove: 'удалить',
     mg: 'мг',
     g: 'гр',
-    medications_empty: 'Добавьте лекарства, которые вам надо принимать',
     theme: 'Тема',
     theme_dark: 'Темная',
     choose_language: 'Выберите язык',
@@ -32,7 +28,15 @@ export const ru = {
     language_en: 'Английский',
     hour: 'ч',
     medication_empty: 'Лекарства еще не добавлены',
-    choose_unit: 'Выберите единицу измерения'
+    choose_unit: 'Выберите единицу измерения',
+
+    MEDICATION_PLACEHOLDER_TIME: '12:00',
+    MEDICATION_LABEL_NAME: 'Название препарата',
+    MEDICATION_LABEL_TIME: 'Время приема',
+    'MEDICATION_PLACEHOLDER_MEDICATION-NAME': 'Венлафаксин',
+    MEDICATION_EMPTY_TEXT: 'Добавьте лекарства, которые вам надо принимать',
+    MEDICATION_LABEL_DOSAGE: 'Дозировка',
+    MEDICATION_PLACEHOLDER_DOSAGE: 'мг'
   },
   primeVue: {
     dayNamesShort: ['Вск', 'Пнд', 'Втр', 'Срд', 'Чтв', 'Птн', 'Сбт'],

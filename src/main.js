@@ -14,7 +14,7 @@ import i18n from '@/i18n'
 const app = createApp(App)
 const vfm = createVfm()
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/service-worker.js')
@@ -22,7 +22,7 @@ if ('serviceWorker' in navigator) {
         console.log('Service Worker зарегистрирован с областью: ', registration.scope)
       })
       .catch((error) => {
-        console.log('Ошибка при регистрации Service Worker: ', error);
+        console.log('Ошибка при регистрации Service Worker: ', error)
       })
   })
 }

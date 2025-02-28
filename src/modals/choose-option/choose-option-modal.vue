@@ -9,6 +9,7 @@
     swipe-to-close="down"
     content-transition="vfm-slide-down"
     @click-outside="$emit('update:model-value', false)"
+    @closed="$emit('update:model-value', false)"
   >
     <template #default>
       <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-6">
@@ -34,7 +35,7 @@ import { useStore } from 'vuex'
 import { computed } from 'vue'
 
 export default {
-  name: 'choose-language-modal',
+  name: 'choose-option-modal',
   components: {
     VueFinalModal
   },
@@ -48,7 +49,8 @@ export default {
       default: () => []
     }
   },
-  setup (props, { emit }) {
+  emits: ['update:model-value'],
+  setup (_props, { emit }) {
     const store = useStore()
     const { availableLocales, locale } = useI18n()
     const locales = computed(() => store.getters.getLocales)

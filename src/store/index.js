@@ -8,18 +8,12 @@ import MedicationsModule from './modules/medications.module'
 import RuIcon from '@/assets/img/ru-icon.png'
 import EngIcon from '@/assets/img/eng-icon.png'
 
-// Utils and plugins
-// import VuexPersistence from 'vuex-persist'
 import i18n from '@/i18n'
+import VuexPersistence from 'vuex-persist'
 
-// let plugins = []
-// const vuexLocal = new VuexPersistence({
-//   storage: window.localStorage
-// })
-//
-// if (process.env.NODE_ENV === 'production') {
-//   plugins = [...plugins, vuexLocal.plugin]
-// }
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage
+})
 
 export default createStore({
   state: {
@@ -53,5 +47,6 @@ export default createStore({
   modules: {
     dailyReport: DailyReportModule,
     medications: MedicationsModule
-  }
+  },
+  plugins: [vuexLocal.plugin]
 })

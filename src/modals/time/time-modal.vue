@@ -8,6 +8,7 @@
     swipe-to-close="down"
     content-transition="vfm-slide-down"
     @click-outside="$emit('update:model-value', false)"
+    @closed="$emit('update:model-value', false)"
   >
     <template #default>
       <calendar
@@ -42,6 +43,7 @@ export default {
       required: true
     }
   },
+  emits: ['update:model-value'],
   setup (props) {
     const { medicationIndex } = toRefs(props)
     const store = useStore()

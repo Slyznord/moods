@@ -8,11 +8,14 @@
     swipe-to-close="down"
     content-transition="vfm-slide-down"
     @click-outside="$emit('update:model-value', false)"
+    @closed="$emit('update:model-value', false)"
   >
     <template #default>
-      <div class="tw-flex tw-flex-col tw-w-full tw-items-start tw-gap-6 tw-overflow-y-auto">
+      <div class="tw-flex tw-flex-col tw-w-full tw-items-start tw-gap-7 tw-overflow-y-auto">
         <div class="tw-flex tw-items-center tw-justify-between tw-w-full">
-          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter">{{ $t('message.medications') }}</h2>
+          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter">
+            {{ $t('message.medications') }}
+          </h2>
 
           <div
             class="md-button md-button_primary"
@@ -30,8 +33,8 @@
           >
             <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-3">
               <input-comp
-                :label="$t('message.medication_name')"
-                :placeholder="$t('message.medication_name')"
+                :label="$t('message.MEDICATION_LABEL_NAME')"
+                :placeholder="$t('message.MEDICATION_PLACEHOLDER_MEDICATION-NAME')"
                 :model-value="item.name"
                 @update:model-value="updateMedicationByProperty(index, $event, 'name')"
               />
@@ -39,8 +42,8 @@
               <div class="tw-flex tw-items-center tw-w-full tw-gap-4">
                 <div class="tw-flex tw-items-end tw-min-w-[64%] tw-gap-2">
                   <input-comp
-                    :label="$t('message.medication_notification_time')"
-                    :placeholder="$t('message.medication_notification_time')"
+                    :label="$t('message.MEDICATION_LABEL_TIME')"
+                    :placeholder="$t('message.MEDICATION_PLACEHOLDER_TIME')"
                     disabled
                     :model-value="item.notificationTime"
                     @update:model-value="updateMedicationByProperty(index, $event, 'notificationTime')"
@@ -62,8 +65,8 @@
 
                 <div class="tw-flex tw-items-end tw-w-auto tw-gap-1">
                   <input-comp
-                    :label="$t('message.medication_dosage')"
-                    :placeholder="$t('message.medication_dosage')"
+                    :label="$t('message.MEDICATION_LABEL_DOSAGE')"
+                    :placeholder="$t('message.MEDICATION_PLACEHOLDER_DOSAGE')"
                     :model-value="item.dosage"
                     @update:model-value="updateMedicationByProperty(index, $event, 'dosage')"
                   />
@@ -83,28 +86,13 @@
                 </div>
               </div>
             </div>
-
-            <div
-              class="md-button md-button_outline"
-              @click="onRemoveMedication(index)"
-            >
-              <icon-base
-                :icon="icons.trash"
-                :width="16"
-                :height="16"
-                :view-box-size="[16, 16]"
-                fill="#6C7072"
-              />
-
-              {{ $t('message.remove') }}
-            </div>
           </div>
 
           <span
             v-if="!medications.length"
             class="tw-text-sm tw-font-medium tw-text-sky/base dark:tw-text-sky/base tw-mx-auto"
           >
-            {{ $t('message.medications_empty') }}
+            {{ $t('message.MEDICATION_EMPTY_TEXT') }}
           </span>
         </div>
       </div>
@@ -123,10 +111,10 @@ import SelectComp from '@/components/select-comp.vue'
 import TimeModal from '@/modals/time/time-modal.vue'
 import icons from '@/utils/icons.js'
 
+import i18n from '@/i18n.js'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { useModal, VueFinalModal } from 'vue-final-modal'
-import i18n from '@/i18n.js'
 
 export default {
   name: 'medication-settings-modal',
@@ -136,6 +124,7 @@ export default {
     SelectComp,
     VueFinalModal
   },
+  emits: ['update:model-value'],
   setup () {
     const store = useStore()
 

@@ -8,6 +8,7 @@
     swipe-to-close="down"
     content-transition="vfm-slide-down"
     @click-outside="$emit('update:model-value', false)"
+    @closed="$emit('update:model-value', false)"
   >
     <template #default>
       <Calendar
@@ -49,7 +50,8 @@ export default {
     Calendar,
     VueFinalModal
   },
-  setup (props, { emit }) {
+  emits: ['update:model-value'],
+  setup (_props, { emit }) {
     const store = useStore()
 
     const ptOptions = {
@@ -92,18 +94,28 @@ export default {
       monthpicker: {
         class: 'tw-grid tw-grid-cols-3 tw-gap-4'
       },
-      month: {
-        class: 'tw-flex tw-justify-center tw-items-center tw-w-full tw-text-base dark:tw-text-sky/light tw-text-ink/base tw-font-medium'
-      },
+      month: ({ context }) => ({
+        class: [
+          'tw-flex tw-justify-center tw-items-center tw-w-full',
+          'tw-py-2',
+          'tw-text-base dark:tw-text-sky/light tw-text-ink/base tw-font-medium',
+          { 'tw-bg-primary/light dark:tw-bg-primary/base': context.selected }
+        ]
+      }),
       decadetitle: {
         class: 'tw-text-2xl tw-font-semibold tw-text-ink/dark dark:tw-text-sky/light'
       },
       yearpicker: {
         class: 'tw-grid tw-grid-cols-2 tw-gap-4'
       },
-      year: {
-        class: 'tw-flex tw-justify-center tw-items-center tw-w-full tw-text-base dark:tw-text-sky/light tw-text-ink/base tw-font-medium'
-      }
+      year: ({ context }) => ({
+        class: [
+          'tw-flex tw-justify-center tw-items-center tw-w-full',
+          'tw-py-2',
+          'tw-text-base dark:tw-text-sky/light tw-text-ink/base tw-font-medium',
+          { 'tw-bg-primary/light dark:tw-bg-primary/base': context.selected }
+        ]
+      })
     }
     const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
     const formattedTargetDate = computed(() => new Date(targetDateTimestamp.value))
@@ -120,7 +132,7 @@ export default {
         return false
       }
 
-      return Object.values(report).every(value => {
+      return Object.values(report).some(value => {
         if (Array.isArray(value)) {
           return value.every(item => Object.hasOwn(item, 'value'))
         }

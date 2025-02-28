@@ -1,8 +1,8 @@
 <template>
   <div
-    class="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-8"
     v-touch:swipe.left="onSwipeHandler"
     v-touch:swipe.right="onSwipeHandler"
+    class="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-8"
   >
     <header-comp />
     <sleep-hours />
@@ -49,7 +49,7 @@
           :key="index"
           :options="selectButtonOptions"
           :model-value="item.value || ''"
-          :label="`${item.name}: ${item.dosage}${item.unit.label}`"
+          :label="`${item.name}: ${item.dosage}${item.unit.label ?? ''}`"
           @update:model-value="updateMedications({ index, value: $event, timestamp: targetTimestamp, property: 'value' })"
         />
       </div>
@@ -63,9 +63,11 @@
     </div>
 
     <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-4">
-      <h3 class="tw-text-base tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">{{ $t('message.notes') }}</h3>
+      <h3 class="tw-text-base tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">
+        {{ $t('message.notes') }}
+      </h3>
 
-      <Textarea
+      <textarea-prime
         :model-value="getTargetReport.notes"
         :placeholder="$t('message.notes_placeholder')"
         auto-resize
@@ -83,7 +85,7 @@ import MedicationSettingsModal from '@/modals/medication-settings/medication-set
 import OptionButton from '@/components/option-button.vue'
 import SleepHours from './components/sleep-hours.vue'
 import Stages from './components/stages.vue'
-import Textarea from 'primevue/textarea'
+import TextareaPrime from 'primevue/textarea'
 import icons from '@/utils/icons'
 
 import { computed } from 'vue'
@@ -100,7 +102,7 @@ export default {
     OptionButton,
     SleepHours,
     Stages,
-    Textarea
+    TextareaPrime
   },
   setup () {
     const { t } = useI18n()

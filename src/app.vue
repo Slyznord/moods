@@ -1,8 +1,6 @@
 <template>
   <div class="tw-relative">
     <div class="tw-flex tw-flex-col tw-w-full tw-h-contentHeight tw-px-4 tw-pt-6 tw-overflow-y-auto">
-      <h1>CHECK</h1>
-
       <router-view />
     </div>
 

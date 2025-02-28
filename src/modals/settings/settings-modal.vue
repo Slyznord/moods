@@ -8,16 +8,19 @@
     swipe-to-close="down"
     content-transition="vfm-slide-down"
     @click-outside="$emit('update:model-value', false)"
+    @closed="$emit('update:model-value', false)"
   >
     <template #default>
       <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-5">
         <div class="tw-flex tw-flex-col tw-items-start tw-gap-2 tw-w-full">
-          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">{{ $t('message.theme') }}</h2>
+          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">
+            {{ $t('message.theme') }}
+          </h2>
 
           <div class="tw-flex tw-items-center tw-justify-between tw-w-full">
             <span class="tw-text-base tw-font-medium tw-text-ink/base dark:tw-text-sky/base">{{ $t('message.theme_dark') }}</span>
 
-            <Switch
+            <switch-primary
               :checked="darkMode"
               @update:checked="setColorMode($event)"
             />
@@ -25,7 +28,9 @@
         </div>
 
         <div class="tw-flex tw-flex-col tw-items-start tw-gap-2 tw-w-full">
-          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/dark dark:tw-text-sky/base">{{ $t('message.language') }}</h2>
+          <h2 class="tw-text-lg tw-font-semibold tw-text-ink/dark dark:tw-text-sky/base">
+            {{ $t('message.language') }}
+          </h2>
 
           <div
             class="tw-flex tw-items-center tw-justify-start tw-w-full tw-gap-3"
@@ -36,7 +41,9 @@
               alt="language icon"
             >
 
-            <span class="tw-text-base tw-font-medium tw-text-ink/base dark:tw-text-sky/base">{{ locales[locale].label }}</span>
+            <span class="tw-text-base tw-font-medium tw-text-ink/base dark:tw-text-sky/base">
+              {{ locales[locale].label }}
+            </span>
           </div>
         </div>
       </div>
@@ -49,7 +56,7 @@
 <script>
 import ChooseOption from '@/modals/choose-option/choose-option-modal.vue'
 import ChooseLanguage from '@/components/choose-language.vue'
-import Switch from '@/components/switch.vue'
+import SwitchPrimary from '@/components/switch.vue'
 
 import { VueFinalModal, useModal } from 'vue-final-modal'
 import { useStore } from 'vuex'
@@ -60,9 +67,10 @@ import i18n from '@/i18n.js'
 export default {
   name: 'settings-modal',
   components: {
-    Switch,
+    SwitchPrimary,
     VueFinalModal
   },
+  emits: ['update:model-value'],
   setup () {
     const store = useStore()
     const { locale } = useI18n()
