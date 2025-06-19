@@ -14,14 +14,14 @@
       <div class="tw-flex tw-flex-col tw-w-full tw-items-start tw-gap-7 tw-overflow-y-auto">
         <div class="tw-flex tw-items-center tw-justify-between tw-w-full">
           <h2 class="tw-text-lg tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter">
-            {{ $t('message.medications') }}
+            {{ $t('message.MEDICATION_HEADLINE') }}
           </h2>
 
           <div
             class="md-button md-button_primary"
             @click="appendMedication"
           >
-            + {{ $t('message.add') }}
+            + {{ $t('message.GLOBAL_BUTTON_ADD') }}
           </div>
         </div>
 
@@ -32,15 +32,29 @@
             class="tw-flex tw-flex-col tw-items-end tw-w-full tw-gap-3"
           >
             <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-3">
+              <div class="tw-flex tw-items-center tw-justify-between tw-w-full">
+                <h3 class="tw-text-lg tw-font-medium tw-text-ink/base dark:tw-text-sky/white">
+                  {{ item?.name || `${$t('message.MEDICATION_EMPTY_NAME')} ${index + 1}` }}
+                </h3>
+
+                <div
+                  class="md-button md-button_outline"
+                  @click="onRemoveMedication(index)"
+                >
+                  Удалить
+                </div>
+              </div>
+
               <input-comp
                 :label="$t('message.MEDICATION_LABEL_NAME')"
                 :placeholder="$t('message.MEDICATION_PLACEHOLDER_MEDICATION-NAME')"
                 :model-value="item.name"
-                @update:model-value="updateMedicationByProperty(index, $event, 'name')"
+                @update:model-value="updateMedicationByProperty({ uuid: item.uuid, property: 'name', value: $event })"
               />
 
-              <div class="tw-flex tw-items-center tw-w-full tw-gap-4">
-                <div class="tw-flex tw-items-end tw-min-w-[64%] tw-gap-2">
+              <div class="tw-column-start tw-w-full tw-gap-3">
+                <!-- Время приёма -->
+                <div class="tw-flex tw-items-end tw-w-full tw-gap-2">
                   <input-comp
                     :label="$t('message.MEDICATION_LABEL_TIME')"
                     :placeholder="$t('message.MEDICATION_PLACEHOLDER_TIME')"
@@ -63,12 +77,13 @@
                   </div>
                 </div>
 
-                <div class="tw-flex tw-items-end tw-w-auto tw-gap-1">
+                <!-- Дозировка -->
+                <div class="tw-flex tw-items-end tw-w-full tw-gap-1">
                   <input-comp
                     :label="$t('message.MEDICATION_LABEL_DOSAGE')"
                     :placeholder="$t('message.MEDICATION_PLACEHOLDER_DOSAGE')"
                     :model-value="item.dosage"
-                    @update:model-value="updateMedicationByProperty(index, $event, 'dosage')"
+                    @update:model-value="updateMedicationByProperty({ uuid: item.uuid, property: 'dosage', value: $event })"
                   />
 
                   <select-comp
@@ -76,13 +91,9 @@
                     :model-value="item.unit"
                     :options="units"
                     option-label="label"
-                    @update:model-value="updateMedicationByProperty(index, $event, 'unit')"
-                    @click="openChooseUnitModal"
-                  >
-                    <template #value="{ value }">
-                      {{ value.label }}
-                    </template>
-                  </select-comp>
+                    option-value="prop"
+                    @click="openChooseUnitModal(item?.uuid)"
+                  />
                 </div>
               </div>
             </div>
@@ -103,18 +114,18 @@
 </template>
 
 <script>
-import ChooseOptionModal from '@/modals/choose-option/choose-option-modal.vue'
-import ChooseUnit from '@/components/choose-unit.vue'
+import ChooseOptionModal from '@/components/choose-option/choose-option-modal.vue'
+import ChooseUnit from '@/modules/medication-settings/components/choose-unit.vue'
 import IconBase from '@/components/icon-base.vue'
 import InputComp from '@/components/input-comp.vue'
 import SelectComp from '@/components/select-comp.vue'
-import TimeModal from '@/modals/time/time-modal.vue'
+import TimeModal from '@/modules/time/time-modal.vue'
 import icons from '@/utils/icons.js'
 
 import i18n from '@/i18n.js'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
-import { useModal, VueFinalModal } from 'vue-final-modal'
+import { VueFinalModal, useModal, useVfm } from 'vue-final-modal'
 
 export default {
   name: 'medication-settings-modal',
@@ -131,17 +142,35 @@ export default {
     const medications = computed(() => store.state.medications.medications)
     const units = computed(() => store.getters['medications/getUnits'])
 
-    const { open: openChooseUnitModal } = useModal({
-      component: ChooseOptionModal,
-      attrs: {
-        headline: i18n.global.t('message.choose_unit')
-      },
-      slots: {
-        options: ChooseUnit
-      }
-    })
+    const openChooseUnitModal = (uuid) => {
+      const vfm = useVfm()
+      const { open } = useModal({
+        component: ChooseOptionModal,
+        attrs: {
+          headline: i18n.global.t('message.MEDICATION_BUTTON_CHOOSE-UNIT')
+        },
+        slots: {
+          options: {
+            component: ChooseUnit,
+            attrs: {
+              onSelect: (value) => {
+                store.commit('medications/updateMedicationByProperty', {
+                  uuid,
+                  property: 'unit',
+                  value
+                })
+                vfm.close('choose-option')
+              }
+            }
+          }
+        }
+      })
 
-    function openTimeModal (index) {
+      open()
+    }
+
+    const appendMedication = () => store.commit('medications/appendMedication')
+    const openTimeModal = (index) => {
       const { open } = useModal({
         component: TimeModal,
         attrs: {
@@ -151,20 +180,16 @@ export default {
 
       open()
     }
-
-    function appendMedication () {
-      store.commit('dailyReport/appendMedication', store.state.dailyReport.targetDate)
-      store.commit('medications/appendMedication')
-    }
-
-    function onRemoveMedication (index) {
+    const onRemoveMedication = (index) => {
       store.commit('dailyReport/removeMedication', { index, timestamp: store.state.dailyReport.targetDate })
       store.commit('medications/removeMedication', index)
     }
-
-    function updateMedicationByProperty (index, value, property) {
-      store.commit('dailyReport/updateMedications', { index, value, property, timestamp: store.state.dailyReport.targetDate })
-      store.commit('medications/updateMedicationByProperty', { index, value, property })
+    const updateMedicationByProperty = ({ uuid, property, value }) => {
+      store.commit('medications/updateMedicationByProperty', {
+        uuid,
+        property,
+        value
+      })
     }
 
     return {

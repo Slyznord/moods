@@ -54,6 +54,58 @@ export default {
   setup (_props, { emit }) {
     const store = useStore()
 
+    const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
+    const formattedTargetDate = computed(() => new Date(targetDateTimestamp.value))
+    // Замена слеша на точку, запятую, дефис и т.д. приведет к тому,
+    // что дата в ios будет возвращаться неправильная, а именно Null.
+    // Особенность движка Safari :/
+    const getDateTimestamp = ({ day, month, year }) => dayjs(`${year}/${month + 1}/${day}`).valueOf()
+
+    function isCompletedReport (date) {
+      const report = store.state.dailyReport.history.find(item => item.timestamp === getDateTimestamp(date))
+
+      if (!report) {
+        return false
+      }
+
+      return Object.values(report).some(value => {
+        if (Array.isArray(value)) {
+          return value.every(item => Object.hasOwn(item, 'value'))
+        }
+
+        return value !== undefined && value !== null
+      })
+    }
+
+    function isFutureDay (date) {
+      return getDateTimestamp(date) > Date.now()
+    }
+
+    function isSelectedDate (date) {
+      return getDateTimestamp(date) === targetDateTimestamp.value
+    }
+
+    function changeDate (value) {
+      const timestamp = dayjs(value).valueOf()
+
+      if (timestamp > dayjs().valueOf()) return
+
+      store.commit('dailyReport/setTargetDate', timestamp)
+
+      const foundedReport = store.state.dailyReport.history.find(item => item.timestamp === timestamp)
+
+      if (!foundedReport) {
+        const reportFactory = new ReportFactory()
+        const dailyReport = reportFactory.createDailyReport(timestamp)
+
+        dailyReport.medications = JSON.parse(JSON.stringify(store.state.medications.medications))
+
+        store.commit('dailyReport/appendReport', dailyReport.getReport())
+      }
+
+      emit('update:model-value', false)
+    }
+
     const ptOptions = {
       root: {
         class: 'tw-w-full'
@@ -116,58 +168,6 @@ export default {
           { 'tw-bg-primary/light dark:tw-bg-primary/base': context.selected }
         ]
       })
-    }
-    const targetDateTimestamp = computed(() => store.state.dailyReport.targetDate)
-    const formattedTargetDate = computed(() => new Date(targetDateTimestamp.value))
-
-    // Замена слеша на точку, запятую, дефис и т.д. приведет к тому,
-    // что дата в ios будет возвращаться неправильная, а именно Null.
-    // Особенность движка Safari :/
-    const getDateTimestamp = ({ day, month, year }) => dayjs(`${year}/${month + 1}/${day}`).valueOf()
-
-    function isCompletedReport (date) {
-      const report = store.state.dailyReport.history.find(item => item.timestamp === getDateTimestamp(date))
-
-      if (!report) {
-        return false
-      }
-
-      return Object.values(report).some(value => {
-        if (Array.isArray(value)) {
-          return value.every(item => Object.hasOwn(item, 'value'))
-        }
-
-        return value !== undefined && value !== null
-      })
-    }
-
-    function isFutureDay (date) {
-      return getDateTimestamp(date) > Date.now()
-    }
-
-    function isSelectedDate (date) {
-      return getDateTimestamp(date) === targetDateTimestamp.value
-    }
-
-    function changeDate (value) {
-      const timestamp = dayjs(value).valueOf()
-
-      if (timestamp > dayjs().valueOf()) return
-
-      store.commit('dailyReport/setTargetDate', timestamp)
-
-      const foundedReport = store.state.dailyReport.history.find(item => item.timestamp === timestamp)
-
-      if (!foundedReport) {
-        const reportFactory = new ReportFactory()
-        const dailyReport = reportFactory.createDailyReport(timestamp)
-
-        dailyReport.medications = JSON.parse(JSON.stringify(store.state.medications.medications))
-
-        store.commit('dailyReport/appendReport', dailyReport.getReport())
-      }
-
-      emit('update:model-value', false)
     }
 
     return {

@@ -43,6 +43,7 @@ export default {
       default: ''
     }
   },
+  emits: ['update:model-value'],
   setup () {
     const ptOptions = {
       root: {

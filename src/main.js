@@ -33,7 +33,13 @@ app.config.productionTip = false
 app.use(store)
 app.use(i18n)
 app.use(router)
-app.use(PrimeVue)
+app.use(PrimeVue, {
+  locale: {
+    ...i18n.global.messages.value[i18n.global.locale.value]?.primeVue
+  }
+})
 app.use(vfm)
+
+store.commit('localization/setPrimeVueInstance', app.config.globalProperties.$primevue)
 
 app.mount('#app')

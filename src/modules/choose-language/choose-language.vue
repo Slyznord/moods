@@ -4,7 +4,7 @@
       v-for="(item, index) in availableLocales"
       :key="index"
       :class="[
-        'tw-flex tw-items-center tw-justify-start tw-w-full tw-gap-2 tw-h-10 tw-px-3 tw-rounded-md tw-shadow-base',
+        'tw-flex tw-items-center tw-justify-start tw-w-full tw-gap-2 tw-h-10 tw-px-3 tw-rounded-md tw-shadow-base dark:tw-shadow-none',
         { 'tw-bg-primary/base tw-text-sky/light' : item === locale },
         { 'tw-bg-sky/lighter dark:tw-bg-transparent' : item !== locale }
       ]"
@@ -17,9 +17,9 @@
 
       <span
         :class="[
-        'tw-text-base tw-font-medium tw-text-ink/base dark:tw-text-sky/base',
-        { 'tw-text-white' : item === locale }
-      ]"
+          'tw-text-base tw-font-medium tw-text-ink/base dark:tw-text-sky/base',
+          { 'tw-text-white' : item === locale }
+        ]"
       >
         {{ locales[item].label }}
       </span>
@@ -35,14 +35,14 @@ import { useVfm } from 'vue-final-modal'
 
 export default {
   name: 'choose-language',
-  setup (props, { emit }) {
+  setup () {
     const store = useStore()
     const vfm = useVfm()
     const { availableLocales, locale } = useI18n()
-    const locales = computed(() => store.getters.getLocales)
+    const locales = computed(() => store.getters['localization/getLocales'])
 
     function onSelectLanguage (item) {
-      store.commit('setLanguage', item)
+      store.dispatch('localization/onChangeLanguage', item)
       vfm.close('choose-option')
     }
 

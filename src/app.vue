@@ -42,7 +42,10 @@
             @click="item.onClick"
           >
             <icon-base :icon="item.icon.outline" />
-            <span class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/lighter">{{ item.name }}</span>
+
+            <span class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/lighter">
+              {{ item.name }}
+            </span>
           </div>
         </div>
       </template>
@@ -53,9 +56,9 @@
 </template>
 
 <script>
-import BottomMenu from '@/components/bottom-menu.vue'
+import BottomMenu from '@/modules/bottom-menu/bottom-menu.vue'
 import IconBase from '@/components/icon-base.vue'
-import SettingsModal from '@/modals/settings/settings-modal.vue'
+import SettingsModal from '@/modules/settings/settings-modal.vue'
 import icons from '@/utils/icons'
 
 import { onMounted, computed } from 'vue'
@@ -73,12 +76,14 @@ export default {
   setup () {
     const store = useStore()
     const { t } = useI18n()
+
     const { open: openSettingsModal } = useModal({
       component: SettingsModal
     })
+
     const menu = computed(() => [
       {
-        name: t('message.menu_daily'),
+        name: t('message.GLOBAL_MENU_DAILY'),
         icon: {
           outline: icons.chart_outline,
           fill: icons.chart_fill
@@ -88,7 +93,7 @@ export default {
         onClick: () => {}
       },
       {
-        name: t('message.menu_another'),
+        name: t('message.GLOBAL_MENU_ANOTHER'),
         icon: {
           outline: icons.category_outline,
           fill: icons.category_fill
@@ -98,7 +103,7 @@ export default {
         onClick: () => {}
       },
       {
-        name: t('message.menu_analytics'),
+        name: t('message.GLOBAL_MENU_ANALYTICS'),
         icon: {
           outline: icons.graph_outline,
           fill: icons.graph_fill
@@ -108,7 +113,7 @@ export default {
         onClick: () => {}
       },
       {
-        name: t('message.menu_settings'),
+        name: t('message.GLOBAL_MENU_SETTINGS'),
         icon: {
           outline: icons.settings_outline,
           fill: icons.graph_fill

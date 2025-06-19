@@ -11,7 +11,7 @@
 import InputSwitch from 'primevue/inputswitch'
 
 export default {
-  name: 'switch',
+  name: 'switch-comp',
   components: {
     InputSwitch
   },
@@ -25,6 +25,7 @@ export default {
       required: true
     }
   },
+  emits: ['update:checked'],
   setup () {
     const ptOptions = {
       root: {

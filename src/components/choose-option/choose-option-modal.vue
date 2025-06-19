@@ -29,10 +29,7 @@
 </template>
 
 <script>
-import { useI18n } from 'vue-i18n'
 import { VueFinalModal } from 'vue-final-modal'
-import { useStore } from 'vuex'
-import { computed } from 'vue'
 
 export default {
   name: 'choose-option-modal',
@@ -43,29 +40,8 @@ export default {
     headline: {
       type: String,
       default: ''
-    },
-    options: {
-      type: Array,
-      default: () => []
     }
   },
-  emits: ['update:model-value'],
-  setup (_props, { emit }) {
-    const store = useStore()
-    const { availableLocales, locale } = useI18n()
-    const locales = computed(() => store.getters.getLocales)
-
-    function onSelectLanguage (item) {
-      store.commit('setLanguage', item)
-      emit('update:model-value', false)
-    }
-
-    return {
-      availableLocales,
-      locale,
-      locales,
-      onSelectLanguage
-    }
-  }
+  emits: ['update:model-value']
 }
 </script>

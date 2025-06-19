@@ -1,6 +1,8 @@
 <template>
   <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-    <h2 class="tw-text-lg tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter">{{ $t('message.sleep_hours') }}: {{ hours }}{{ $t('message.hour') }}</h2>
+    <h2 class="tw-text-lg tw-font-semibold tw-text-ink/base dark:tw-text-sky/lighter">
+      {{ $t('message.HOME_TEXT_SLEEP-HOURS') }}: {{ hours }}{{ $t('message.GLOBAL_TEXT_HOUR') }}
+    </h2>
 
     <div class="tw-flex tw-items-center tw-w-full tw-gap-3">
       <div
@@ -32,6 +34,7 @@
 
 <script>
 import Slider from 'primevue/slider'
+
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 

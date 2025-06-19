@@ -1,9 +1,13 @@
 <template>
-  <div class="tw-flex tw-flex-col tw-items-start tw-gap-1">
-    <span class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/lighter tw-px-3">{{ label }}</span>
+  <div class="tw-flex tw-flex-col tw-items-start tw-gap-[6px]">
+    <span class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/lighter tw-px-3">
+      {{ label }}
+    </span>
 
     <select-button
       :model-value="modelValue"
+      :option-label="optionLabel"
+      :option-value="optionValue"
       :options="options"
       :allow-empty="allowEmpty"
       :pt="ptOptions"
@@ -33,11 +37,20 @@ export default {
       type: String,
       default: ''
     },
+    optionLabel: {
+      type: String,
+      default: 'label'
+    },
+    optionValue: {
+      type: [String, null],
+      default: null
+    },
     options: {
       type: Array,
       required: true
     }
   },
+  emits: ['update:model-value'],
   setup () {
     const ptOptions = {
       root: {

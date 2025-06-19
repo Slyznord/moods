@@ -4,7 +4,7 @@ import messages from '@/locales/index'
 const vuex = JSON.parse(localStorage.getItem('vuex'))
 const i18n = createI18n({
   legacy: false,
-  locale: vuex?.locale || 'en',
+  locale: vuex?.localization.locale || 'en',
   fallbackLocale: 'en',
   messages
 })

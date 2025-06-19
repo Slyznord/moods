@@ -1,0 +1,7 @@
+@layer components {
+  .tw-column {
+    &-start {
+      @apply tw-flex tw-flex-col tw-items-start;
+    }
+  }
+}

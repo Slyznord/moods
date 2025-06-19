@@ -67,11 +67,12 @@ export default {
       default: ''
     }
   },
+  emits: ['update:model-value'],
   setup () {
     const ptOptions = {
       root: {
         class: [
-          'tw-flex tw-items-center tw-h-10 tw-border tw-border-sky/base dark:tw-border-ink/base tw-rounded-lg tw-outline-none tw-px-2 tw-gap-2 tw-min-w-[60px]',
+          'tw-flex tw-items-center tw-h-10 tw-border tw-border-sky/base dark:tw-border-ink/base tw-bg-transparent tw-rounded-lg tw-outline-none tw-px-2 tw-gap-2 tw-min-w-[60px]',
           'tw-text-sm tw-font-regular tw-text-ink/base dark:tw-text-sky/light tw-placeholder:text-sky/dark dark:tw-placeholder:text-sky/base',
           'hover:tw-border-primary/base'
         ]

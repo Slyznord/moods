@@ -1,9 +1,11 @@
 <template>
   <div
     v-if="steps !== null"
-    class="tw-flex tw-flex-col tw-w-full tw-items-start tw-gap-1"
+    class="tw-flex tw-flex-col tw-w-full tw-items-start tw-gap-[6px]"
   >
-    <span class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/lighter tw-px-3">{{ label }}</span>
+    <span class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/lighter tw-px-3">
+      {{ label }}
+    </span>
 
     <!-- Непонятное поведение tailwindcss. Классы tw-grid-cols-* работают через раз, поэтому было принято решение -->
     <!-- задавать gridTemplateColumns через inline styles. -->
@@ -53,6 +55,7 @@ export default {
       default: 0
     }
   },
+  emits: ['update:model-value'],
   setup (props) {
     const { steps } = toRefs(props)
 

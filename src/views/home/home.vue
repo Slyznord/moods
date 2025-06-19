@@ -1,9 +1,5 @@
 <template>
-  <div
-    v-touch:swipe.left="onSwipeHandler"
-    v-touch:swipe.right="onSwipeHandler"
-    class="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-8"
-  >
+  <div class="tw-flex tw-flex-col tw-w-full tw-h-full tw-gap-8">
     <header-comp />
     <sleep-hours />
 
@@ -21,9 +17,10 @@
 
       <option-button
         :model-value="getTargetReport.therapy"
+        option-value="value"
         :options="selectButtonOptions"
-        :label="$t('message.therapy_today')"
-        @update:model-value="setDailyReportDataByProperty({ value: $event, timestamp: targetTimestamp, property: 'therapy' })"
+        :label="$t('message.HOME_TEXT_THERAPY-TODAY')"
+        @update:model-value="setDailyReportDataByProperty({ value: $event, property: 'therapy', timestamp: targetTimestamp })"
       />
     </div>
 
@@ -37,7 +34,9 @@
           @click="openMedicationSettings"
         />
 
-        <span class="tw-text-base tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">{{ $t('message.medications') }}</span>
+        <span class="tw-text-base tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">
+          {{ $t('message.HOME_TEXT_MEDICATIONS') }}
+        </span>
       </div>
 
       <div
@@ -47,10 +46,11 @@
         <option-button
           v-for="(item, index) in medications"
           :key="index"
+          option-value="value"
           :options="selectButtonOptions"
-          :model-value="item.value || ''"
-          :label="`${item.name}: ${item.dosage}${item.unit.label ?? ''}`"
-          @update:model-value="updateMedications({ index, value: $event, timestamp: targetTimestamp, property: 'value' })"
+          :model-value="getTargetReport.medications.includes(item.uuid)"
+          :label="item?.name ? `${item.name}: ${item.dosage}${item.unit ?? ''}` : `${$t('message.MEDICATION_EMPTY_NAME')} ${ index + 1 }`"
+          @update:model-value="updateMedicationRecord({ uuid: item.uuid, value: $event, timestamp: targetTimestamp })"
         />
       </div>
 
@@ -58,18 +58,18 @@
         v-else
         class="tw-text-sm tw-font-medium tw-text-ink/base dark:tw-text-sky/base tw-mx-auto"
       >
-        {{ $t('message.medication_empty') }}
+        {{ $t('message.MEDICATION_EMPTY_TEXT') }}
       </span>
     </div>
 
     <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-4">
       <h3 class="tw-text-base tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">
-        {{ $t('message.notes') }}
+        {{ $t('message.GLOBAL_TEXT_NOTES') }}
       </h3>
 
       <textarea-prime
         :model-value="getTargetReport.notes"
-        :placeholder="$t('message.notes_placeholder')"
+        :placeholder="$t('message.GLOBAL_PLACEHOLDER_NOTES')"
         auto-resize
         class="tw-w-full tw-border tw-border-sky/base dark:tw-border-ink/dark dark:tw-bg-ink/dark tw-rounded-lg tw-min-h-[96px] tw-outline-none tw-py-3 tw-px-3 tw-text-base tw-font-regular tw-text-ink/base dark:tw-text-sky/lighter tw-resize-none tw-placeholder:text-sky/dark focus:tw-border-primary/base"
         @update:model-value="setDailyReportDataByProperty({ value: $event, timestamp: targetTimestamp, property: 'notes' })"
@@ -81,18 +81,17 @@
 <script>
 import IconBase from '@/components/icon-base.vue'
 import HeaderComp from './components/header-comp.vue'
-import MedicationSettingsModal from '@/modals/medication-settings/medication-settings-modal.vue'
+import MedicationSettingsModal from '@/modules/medication-settings/medication-settings-modal.vue'
 import OptionButton from '@/components/option-button.vue'
 import SleepHours from './components/sleep-hours.vue'
 import Stages from './components/stages.vue'
 import TextareaPrime from 'primevue/textarea'
-import icons from '@/utils/icons'
 
+import icons from '@/utils/icons'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useModal } from 'vue-final-modal'
 import { useI18n } from 'vue-i18n'
-import ReportFactory from '@/classes/Report.factory'
 
 export default {
   name: 'home',
@@ -107,49 +106,47 @@ export default {
   setup () {
     const { t } = useI18n()
     const store = useStore()
-    const { open: openMedicationSettings } = useModal({
-      component: MedicationSettingsModal
-    })
 
-    const medications = computed(() => store.getters['dailyReport/getTargetReport']?.medications || [])
+    const targetTimestamp = computed(() => store.state.dailyReport.targetDate)
+    const getTargetReport = computed(() => store.getters['dailyReport/getTargetReport'])
+    const setDailyReportDataByProperty = (payload) => store.commit('dailyReport/setDailyReportDataByProperty', payload)
 
     // Данные для отрисовки шкал по параметрам
     const parameters = computed(() => store.getters['dailyReport/getParametersForStages'])
-
     // Данные для отрисовки select-button терапии
-    const selectButtonOptions = computed(() => [t('message.yes'), t('message.no')])
-
-    const targetTimestamp = computed(() => store.state.dailyReport.targetDate)
-
-    function onSwipeHandler (direction) {
-      const day = 86400000
-      const targetDay = direction === 'left' ? targetTimestamp.value + day : targetTimestamp.value - day
-
-      store.commit('dailyReport/setTargetDate', targetDay)
-
-      const foundedReport = store.state.dailyReport.history.find(item => item.timestamp === targetDay)
-
-      if (!foundedReport) {
-        const reportFactory = new ReportFactory()
-        const dailyReport = reportFactory.createDailyReport(targetDay)
-
-        dailyReport.medications = JSON.parse(JSON.stringify(store.state.medications.medications))
-
-        store.commit('dailyReport/appendReport', dailyReport.getReport())
+    const selectButtonOptions = computed(() => [
+      {
+        label: t('message.GLOBAL_TEXT_YES'),
+        value: true
+      },
+      {
+        label: t('message.GLOBAL_TEXT_NO'),
+        value: false
       }
+    ])
+
+    const { open: openMedicationSettings } = useModal({
+      component: MedicationSettingsModal
+    })
+    const medications = computed(() => store.state.medications.medications || [])
+    const updateMedicationRecord = ({ uuid, value, timestamp }) => {
+      store.commit('dailyReport/updateMedicationRecord', {
+        uuid,
+        timestamp,
+        value
+      })
     }
 
     return {
-      getTargetReport: computed(() => store.getters['dailyReport/getTargetReport']),
+      getTargetReport,
       icons,
       medications,
-      onSwipeHandler,
       openMedicationSettings,
       parameters,
       selectButtonOptions,
-      setDailyReportDataByProperty: (payload) => store.commit('dailyReport/setDailyReportDataByProperty', payload),
+      setDailyReportDataByProperty,
       targetTimestamp,
-      updateMedications: (payload) => store.commit('dailyReport/updateMedications', payload)
+      updateMedicationRecord
     }
   }
 }

@@ -14,11 +14,13 @@
       <div class="tw-flex tw-flex-col tw-items-start tw-w-full tw-gap-5">
         <div class="tw-flex tw-flex-col tw-items-start tw-gap-2 tw-w-full">
           <h2 class="tw-text-lg tw-font-semibold tw-text-ink/dark dark:tw-text-sky/lighter">
-            {{ $t('message.theme') }}
+            {{ $t('message.GLOBAL_TEXT_THEME') }}
           </h2>
 
           <div class="tw-flex tw-items-center tw-justify-between tw-w-full">
-            <span class="tw-text-base tw-font-medium tw-text-ink/base dark:tw-text-sky/base">{{ $t('message.theme_dark') }}</span>
+            <span class="tw-text-base tw-font-medium tw-text-ink/base dark:tw-text-sky/base">
+              {{ $t('message.GLOBAL_TEXT_THEME-DARK') }}
+            </span>
 
             <switch-primary
               :checked="darkMode"
@@ -29,7 +31,7 @@
 
         <div class="tw-flex tw-flex-col tw-items-start tw-gap-2 tw-w-full">
           <h2 class="tw-text-lg tw-font-semibold tw-text-ink/dark dark:tw-text-sky/base">
-            {{ $t('message.language') }}
+            {{ $t('message.GLOBAL_TEXT_LANGUAGES') }}
           </h2>
 
           <div
@@ -54,15 +56,15 @@
 </template>
 
 <script>
-import ChooseOption from '@/modals/choose-option/choose-option-modal.vue'
-import ChooseLanguage from '@/components/choose-language.vue'
-import SwitchPrimary from '@/components/switch.vue'
+import ChooseOption from '@/components/choose-option/choose-option-modal.vue'
+import ChooseLanguage from '@/modules/choose-language/choose-language.vue'
+import SwitchPrimary from '@/components/switch-comp.vue'
 
+import i18n from '@/i18n.js'
 import { VueFinalModal, useModal } from 'vue-final-modal'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import i18n from '@/i18n.js'
 
 export default {
   name: 'settings-modal',
@@ -77,7 +79,7 @@ export default {
     const { open: openChooseLanguageModal } = useModal({
       component: ChooseOption,
       attrs: {
-        headline: i18n.global.t('message.choose_language')
+        headline: i18n.global.t('message.GLOBAL_BUTTON_CHOOSE-LANG')
       },
       slots: {
         options: ChooseLanguage
@@ -87,7 +89,7 @@ export default {
     return {
       darkMode: computed(() => store.state.darkMode),
       locale,
-      locales: computed(() => store.getters.getLocales),
+      locales: computed(() => store.getters['localization/getLocales']),
       openChooseLanguageModal,
       setColorMode: (payload) => store.commit('setColorMode', payload)
     }
